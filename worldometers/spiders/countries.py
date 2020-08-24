@@ -17,13 +17,14 @@ class CountriesSpider(scrapy.Spider):
             yield response.follow(url = link, callback = self.parse_country, meta = {'country_name':name})    #---> takes in relative url and automatically converts to absolute URL
 
     def parse_country(self, response):
-        name = response.request.meta
+        name = response.request.meta['country_name']
         rows = response.xpath("(//table[@class='table table-striped table-bordered table-hover table-condensed table-list'])[1]/tbody/tr")
         for row in rows: 
             year = row.xpath(".//td[1]/text()").get()
             population = row.xpath(".//td[2]/strong/text()").get()
             
             yield {
+                'country_name':name,
                 'year': year,
                 'population' : population
             }
